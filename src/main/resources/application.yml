@@ -1,0 +1,11 @@
+server:
+  # Puerto local del agente. Distinto del 8081 (datos) para poder correr ambos.
+  port: 8181
+
+spring:
+  application:
+    name: ms-print-agent
+
+# Nombre (o fragmento) de la impresora en el SO. Default para la clase SAT Q22.
+printer:
+  name: SAT
