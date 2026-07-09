@@ -24,9 +24,10 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# TODO: apuntar a donde se publiquen los releases del agente (GitHub Releases,
-# un endpoint estático en Railway, S3, etc.). Sin esto, el updater no hace nada.
-$ManifestUrl = "https://REEMPLAZAR-CON-URL-DE-RELEASES/print-agent/latest.json"
+# Releases publicados en GitHub. La URL /releases/latest/download/<asset> siempre
+# apunta al asset del release MÁS NUEVO, así que no hay que tocar este script al
+# publicar una versión nueva: basta con crear el release con los mismos assets.
+$ManifestUrl = "https://github.com/SharkSolution/ms-print-agent/releases/latest/download/latest.json"
 
 $TaskName   = "SureSellPrintAgent"
 $InstallDir = Join-Path $env:LOCALAPPDATA "SureSellPrintAgent"
