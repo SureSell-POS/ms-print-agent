@@ -1,0 +1,4 @@
+# Los .bat DEBEN conservar CRLF incluso al servirse por raw.githubusercontent
+# (cmd.exe falla con LF: "no se esperaba en este momento"). '-text' = git guarda
+# los bytes tal cual, sin normalizar a LF.
+*.bat -text
