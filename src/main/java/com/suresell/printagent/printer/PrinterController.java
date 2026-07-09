@@ -63,6 +63,17 @@ public class PrinterController {
         return ready ? ResponseEntity.ok("ONLINE") : ResponseEntity.status(503).body("OFFLINE");
     }
 
+    /**
+     * Versión del agente en ejecución. La lee el updater (update-agent.ps1) para
+     * decidir si hay una versión más nueva publicada. Toma la Implementation-Version
+     * del manifest del JAR; en dev (sin empaquetar) devuelve "dev".
+     */
+    @GetMapping("/version")
+    public ResponseEntity<java.util.Map<String, String>> getVersion() {
+        String v = getClass().getPackage().getImplementationVersion();
+        return ResponseEntity.ok(java.util.Map.of("version", v == null ? "dev" : v));
+    }
+
     @PostMapping("/order-ticket")
     public ResponseEntity<String> printOrderTicket(@RequestBody OrderTicketRequest request) {
         try {
