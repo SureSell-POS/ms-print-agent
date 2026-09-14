@@ -1,5 +1,13 @@
 # SureSell Print Agent — instalación en Windows
 
+> 🔴 **Cambiar el dominio del POS rompe la impresión en todas las máquinas a la vez.** Las políticas
+> que escriben `configure-chrome-policy.ps1` / `install.ps1` llevan la URL literal del POS
+> (`LocalNetworkAccessAllowedForUrls`); con otra URL, Chrome 142+ cuelga la llamada a
+> `localhost:8181` y el POS dice «Impresora Offline» con el agente sano. Ver
+> `docs/operacion/DNS-Y-DOMINIOS.md` y `docs/operacion/INSTALADOR-AGENTE-PLAN.md` §3.2 (la política
+> la escribirá el agente con el origen real).
+
+
 Tres formas de correr el agente en la máquina del punto de venta, de la más simple
 a la más "producto". Todas exponen la API en `http://localhost:8181` y la PWA del
 POS le envía los tickets.

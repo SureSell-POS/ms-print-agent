@@ -1,5 +1,13 @@
 # ms-print-agent
 
+> 🔴 **Cambiar el dominio del POS rompe la impresión en todas las máquinas a la vez.** Las políticas
+> que escriben `configure-chrome-policy.ps1` / `install.ps1` llevan la URL literal del POS
+> (`LocalNetworkAccessAllowedForUrls`); con otra URL, Chrome 142+ cuelga la llamada a
+> `localhost:8181` y el POS dice «Impresora Offline» con el agente sano. Ver
+> `docs/operacion/DNS-Y-DOMINIOS.md` y `docs/operacion/INSTALADOR-AGENTE-PLAN.md` §3.2 (la política
+> la escribirá el agente con el origen real).
+
+
 Agente local de hardware para el POS de **SureSell**. Es un microservicio Spring Boot
 mínimo (solo `web` + `lombok`, sin base de datos) que corre **en la máquina del punto de
 venta** y expone la impresora térmica ESC/POS y el cajón monedero como una API HTTP local.
