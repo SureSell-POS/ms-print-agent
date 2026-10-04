@@ -10,7 +10,7 @@
 #    .\install.ps1 -Uninstall
 # =============================================================================
 param(
-  [string]$Origin = "https://pos-web-production-7032.up.railway.app",
+  [string]$Origin = "https://pos-caja.suresell.com.co",   # POS de producción; staging: https://posstaging.suresell.com.co
   [string]$PrinterName = "",
   [switch]$Uninstall
 )

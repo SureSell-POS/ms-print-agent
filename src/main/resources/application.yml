@@ -1,6 +1,9 @@
 server:
   # Puerto local del agente. Distinto del 8081 (datos) para poder correr ambos.
   port: 8181
+  # A10: SOLO la propia máquina. Sin esto Spring escucha en todas las interfaces y otro equipo de la red del
+  # local podía imprimir o abrir el cajón con un curl a <IP>:8181. El POS llama a http://localhost:8181.
+  address: 127.0.0.1
 
 spring:
   application:
@@ -9,3 +12,8 @@ spring:
 # Nombre (o fragmento) de la impresora en el SO. Default para la clase SAT Q22.
 printer:
   name: SAT
+
+agente:
+  # A10: los orígenes (el POS) que pueden llamar al agente desde el navegador, separados por coma. Cualquier
+  # otra web abierta en el equipo recibe 403 y ninguna cabecera CORS. Se cambia con AGENTE_ORIGENES.
+  origenes: ${AGENTE_ORIGENES:https://pos-caja.suresell.com.co,https://posstaging.suresell.com.co,http://localhost:4200}

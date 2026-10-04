@@ -59,7 +59,7 @@ Un solo comando (PowerShell **como administrador**) que deja todo listo: políti
 navegador + auto-arranque del agente.
 
 ```powershell
-.\install.ps1                                   # origen de staging por defecto
+.\install.ps1                                   # origen por defecto: https://pos-caja.suresell.com.co (producción)
 .\install.ps1 -Origin "https://pos.tudominio.com" -PrinterName "POS-58"
 .\install.ps1 -Uninstall
 ```
@@ -81,13 +81,45 @@ Ref: https://chromeenterprise.google/policies/local-network-access-allowed-for-u
 1. Arranca el agente (cualquier opción) → `http://localhost:8181/api/printer/status` = `ONLINE`.
 2. Aplica la política del navegador (`install.ps1` o `configure-chrome-policy.ps1`, como admin)
    y **reinicia Chrome** — si no, Chrome 142+ bloquea la llamada a localhost.
-3. En **Chrome, en la misma máquina**, abre `https://pos-web-production-7032.up.railway.app`.
-4. Entra (`admin@sharkburger.co` / `shark2026`) y cobra una orden → imprime en la local.
+   Para staging: `.\install.ps1 -Origin "https://posstaging.suresell.com.co"`.
+3. En **Chrome, en la misma máquina**, abre `https://posstaging.suresell.com.co`.
+4. Entra con un usuario de QA de staging y cobra una orden → imprime en la local.
    - El ticket sale con los datos del negocio del tenant (editables en el POS →
      "Datos del negocio"), ya no hardcodeados.
 
+## Actualizar un local a 0.0.2 (A10: solo 127.0.0.1 y solo el POS)
+
+Desde 0.0.2 el agente **solo escucha en 127.0.0.1** (otra máquina de la red no llega) y **solo atiende al POS**:
+`https://pos-caja.suresell.com.co`, `https://posstaging.suresell.com.co` y `http://localhost:4200`. Cualquier otra web
+recibe 403 sin cabeceras CORS. Un lote lleva como mucho 20 tickets. Un error devuelve un texto genérico; el detalle
+queda en el log del agente.
+
+**Una vez, para publicar la versión** (en el equipo de desarrollo):
+
+1. `./gradlew clean bootJar` → `build/libs/ms-print-agent-0.0.2.jar`.
+2. `shasum -a 256 build/libs/ms-print-agent-0.0.2.jar` → copia el hash.
+3. Crea un `latest.json`:
+   `{ "version": "0.0.2", "url": "https://github.com/SharkSolution/ms-print-agent/releases/download/v0.0.2/ms-print-agent-0.0.2.jar", "sha256": "<hash>" }`
+4. En GitHub, crea el release `v0.0.2` en `SharkSolution/ms-print-agent` con dos assets: el JAR y `latest.json`.
+
+**En cada local** (PowerShell **como administrador**, en la carpeta con los `.ps1`):
+
+1. Política del navegador con el dominio actual del POS (las máquinas antiguas tienen la URL de Railway, que ya no
+   sirve):
+   `.\configure-chrome-policy.ps1` (escribe `https://pos-caja.suresell.com.co`).
+2. Agente nuevo: `.\update-agent.ps1` (o espera a la revisión diaria de las 04:30 si se instaló con `-Install`).
+3. **Cierra Chrome del todo y ábrelo otra vez.**
+4. Comprueba:
+   - `http://127.0.0.1:8181/api/printer/version` → `{"version":"0.0.2"}`.
+   - `chrome://policy` → `LocalNetworkAccessAllowedForUrls` = `https://pos-caja.suresell.com.co`.
+   - En el POS: cobra una venta y abre el cajón.
+
+**Si el POS dice «Impresora Offline» tras actualizar**, casi siempre el origen no está en la lista. Mira la URL de la
+barra del navegador. Si no es una de las tres de arriba, arranca el agente con la variable `AGENTE_ORIGENES` (lista
+separada por comas, sin `/` final) o corrige la URL del POS.
+
 ## Notas
 
-- Puerto fijo `8181`. Si choca, edita `printer.name`/`server.port` (arg `--server.port=`).
+- Puerto fijo `8181`, solo en `127.0.0.1`. Si choca, edita `printer.name`/`server.port` (arg `--server.port=`).
 - El agente NO maneja datos sensibles (solo imprime lo que la PWA le envía).
 - Auto-update: ver `packaging/windows/update-agent.ps1` (opcional).

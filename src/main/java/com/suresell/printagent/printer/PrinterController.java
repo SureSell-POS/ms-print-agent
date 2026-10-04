@@ -13,6 +13,17 @@ import java.util.List;
 @RequestMapping("/api/printer")
 public class PrinterController {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PrinterController.class);
+
+    /** A10: una petición no vacía el rollo de papel. */
+    static final int MAXIMO_POR_LOTE = 20;
+
+    /** A10: el detalle (impresora, Java) va al log; al cliente, un mensaje genérico. */
+    private static ResponseEntity<String> error(String queFallo, Exception e) {
+        log.error("{}", queFallo, e);
+        return ResponseEntity.internalServerError().body(queFallo + ". Revisa que la impresora esté encendida y conectada.");
+    }
+
     private final PrintTicketUseCase printTicketUseCase;
     private final PrintOrderTicketUseCase printOrderTicketUseCase;
     private final PrinterPort printerPort;
@@ -31,19 +42,22 @@ public class PrinterController {
             printTicketUseCase.execute(request);
             return ResponseEntity.ok("Impresión enviada correctamente");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error imprimiendo: " + e.getMessage());
+            return error("No se pudo imprimir", e);
         }
     }
 
     @PostMapping("/ticket-batch")
     public ResponseEntity<String> printTicketBatch(@RequestBody List<PosTicketRequest> requests) {
+        if (requests.size() > MAXIMO_POR_LOTE) {
+            return ResponseEntity.badRequest().body("Un lote lleva como mucho " + MAXIMO_POR_LOTE + " tickets.");
+        }
         try {
             for (PosTicketRequest request : requests) {
                 printTicketUseCase.execute(request);
             }
             return ResponseEntity.ok(requests.size() + " impresiones enviadas correctamente");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error en lote de impresión: " + e.getMessage());
+            return error("No se pudo imprimir el lote", e);
         }
     }
 
@@ -53,7 +67,7 @@ public class PrinterController {
             printerPort.openDrawer();
             return ResponseEntity.ok("Comando de apertura enviado");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error abriendo cajón: " + e.getMessage());
+            return error("No se pudo abrir el cajón", e);
         }
     }
 
@@ -80,7 +94,7 @@ public class PrinterController {
             printOrderTicketUseCase.execute(request);
             return ResponseEntity.ok("Comanda enviada correctamente");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error imprimiendo comanda: " + e.getMessage());
+            return error("No se pudo imprimir la comanda", e);
         }
     }
 }
