@@ -83,6 +83,13 @@ class ElAgenteSoloAtiendeAlPosTest {
         // El POST «simple» que no pasa por preflight: el cajón no se abre para una web ajena.
         assertThat(pedir("POST", "/api/printer/drawer/open", AJENO, null).statusCode()).isEqualTo(403);
         verify(impresora, never()).openDrawer();
+        // Por defecto, ni staging ni un programa local en el 4200: solo entran con AGENTE_ORIGENES.
+        for (String fueraDelDefecto : new String[] {"https://posstaging.suresell.com.co", "http://localhost:4200"}) {
+            HttpResponse<String> r = pedir("POST", "/api/printer/drawer/open", fueraDelDefecto, null);
+            assertThat(r.statusCode()).as(fueraDelDefecto).isEqualTo(403);
+            assertThat(r.headers().firstValue("Access-Control-Allow-Origin")).as(fueraDelDefecto).isEmpty();
+        }
+        verify(impresora, never()).openDrawer();
         assertThat(pedir("POST", "/api/printer/drawer/open", POS, null).statusCode()).as("control: el POS sí").isEqualTo(200);
         verify(impresora, times(1)).openDrawer();
         assertThat(pedir("GET", "/api/printer/status", null, null).statusCode()).as("sin Origin (la propia máquina) pasa").isEqualTo(200);

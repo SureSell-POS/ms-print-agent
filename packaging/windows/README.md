@@ -81,7 +81,9 @@ Ref: https://chromeenterprise.google/policies/local-network-access-allowed-for-u
 1. Arranca el agente (cualquier opción) → `http://localhost:8181/api/printer/status` = `ONLINE`.
 2. Aplica la política del navegador (`install.ps1` o `configure-chrome-policy.ps1`, como admin)
    y **reinicia Chrome** — si no, Chrome 142+ bloquea la llamada a localhost.
-   Para staging: `.\install.ps1 -Origin "https://posstaging.suresell.com.co"`.
+   Para staging: `.\install.ps1 -Origin "https://posstaging.suresell.com.co"` y, una vez, en PowerShell normal:
+   `setx AGENTE_ORIGENES "https://posstaging.suresell.com.co"` (sin eso el agente solo atiende al POS de producción).
+   Cierra sesión de Windows y vuelve a entrar para que la tarea del agente la lea.
 3. En **Chrome, en la misma máquina**, abre `https://posstaging.suresell.com.co`.
 4. Entra con un usuario de QA de staging y cobra una orden → imprime en la local.
    - El ticket sale con los datos del negocio del tenant (editables en el POS →
@@ -90,7 +92,7 @@ Ref: https://chromeenterprise.google/policies/local-network-access-allowed-for-u
 ## Actualizar un local a 0.0.2 (A10: solo 127.0.0.1 y solo el POS)
 
 Desde 0.0.2 el agente **solo escucha en 127.0.0.1** (otra máquina de la red no llega) y **solo atiende al POS**:
-`https://pos-caja.suresell.com.co`, `https://posstaging.suresell.com.co` y `http://localhost:4200`. Cualquier otra web
+`https://pos-caja.suresell.com.co`. Cualquier otra web (incluidos staging y un programa local en el 4200)
 recibe 403 sin cabeceras CORS. Un lote lleva como mucho 20 tickets. Un error devuelve un texto genérico; el detalle
 queda en el log del agente.
 
@@ -115,7 +117,7 @@ queda en el log del agente.
    - En el POS: cobra una venta y abre el cajón.
 
 **Si el POS dice «Impresora Offline» tras actualizar**, casi siempre el origen no está en la lista. Mira la URL de la
-barra del navegador. Si no es una de las tres de arriba, arranca el agente con la variable `AGENTE_ORIGENES` (lista
+barra del navegador. Si no es la de arriba, arranca el agente con la variable `AGENTE_ORIGENES` (lista
 separada por comas, sin `/` final) o corrige la URL del POS.
 
 ## Notas

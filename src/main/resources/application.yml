@@ -15,5 +15,7 @@ printer:
 
 agente:
   # A10: los orígenes (el POS) que pueden llamar al agente desde el navegador, separados por coma. Cualquier
-  # otra web abierta en el equipo recibe 403 y ninguna cabecera CORS. Se cambia con AGENTE_ORIGENES.
-  origenes: ${AGENTE_ORIGENES:https://pos-caja.suresell.com.co,https://posstaging.suresell.com.co,http://localhost:4200}
+  # otra web abierta en el equipo recibe 403 y ninguna cabecera CORS. Por defecto, SOLO el POS de producción:
+  # en un equipo de comercio, localhost:4200 sería cualquier programa local. Staging y desarrollo entran solo
+  # en sus máquinas, con AGENTE_ORIGENES.
+  origenes: ${AGENTE_ORIGENES:https://pos-caja.suresell.com.co}

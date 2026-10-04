@@ -45,7 +45,7 @@ layout ya probado en producción.
 | `server.port` | `8181` | Puerto local del agente (distinto del 8081 de datos, para correr ambos). |
 | `printer.name` | `SAT` | Nombre (o fragmento) de la impresora en el SO. |
 | `server.address` | `127.0.0.1` | Solo la propia máquina; otra de la red no llega al agente. |
-| `agente.origenes` (env `AGENTE_ORIGENES`) | POS producción, POS staging, `localhost:4200` | Únicas webs que pueden llamar al agente; otra recibe 403 sin cabeceras CORS. |
+| `agente.origenes` (env `AGENTE_ORIGENES`) | solo `https://pos-caja.suresell.com.co` | Únicas webs que pueden llamar al agente; otra recibe 403 sin cabeceras CORS. Staging (`posstaging`) y desarrollo (`localhost:4200`) se añaden con `AGENTE_ORIGENES`, solo en esas máquinas. |
 
 Actualizar los locales: `packaging/windows/README.md` → «Actualizar un local a 0.0.2».
 
