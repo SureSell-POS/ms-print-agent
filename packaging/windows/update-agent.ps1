@@ -27,7 +27,7 @@ $ErrorActionPreference = "Stop"
 # Releases publicados en GitHub. La URL /releases/latest/download/<asset> siempre
 # apunta al asset del release MÁS NUEVO, así que no hay que tocar este script al
 # publicar una versión nueva: basta con crear el release con los mismos assets.
-$ManifestUrl = "https://github.com/SharkSolution/ms-print-agent/releases/latest/download/latest.json"
+$ManifestUrl = "https://github.com/SureSell-POS/ms-print-agent/releases/latest/download/latest.json"
 
 $TaskName   = "SureSellPrintAgent"
 $InstallDir = Join-Path $env:LOCALAPPDATA "SureSellPrintAgent"

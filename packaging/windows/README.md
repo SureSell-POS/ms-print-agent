@@ -99,8 +99,8 @@ queda en el log del agente.
 1. `./gradlew clean bootJar` → `build/libs/ms-print-agent-0.0.2.jar`.
 2. `shasum -a 256 build/libs/ms-print-agent-0.0.2.jar` → copia el hash.
 3. Crea un `latest.json`:
-   `{ "version": "0.0.2", "url": "https://github.com/SharkSolution/ms-print-agent/releases/download/v0.0.2/ms-print-agent-0.0.2.jar", "sha256": "<hash>" }`
-4. En GitHub, crea el release `v0.0.2` en `SharkSolution/ms-print-agent` con dos assets: el JAR y `latest.json`.
+   `{ "version": "0.0.2", "url": "https://github.com/SureSell-POS/ms-print-agent/releases/download/v0.0.2/ms-print-agent-0.0.2.jar", "sha256": "<hash>" }`
+4. En GitHub, crea el release `v0.0.2` en `SureSell-POS/ms-print-agent` con dos assets: el JAR y `latest.json`.
 
 **En cada local** (PowerShell **como administrador**, en la carpeta con los `.ps1`):
 
